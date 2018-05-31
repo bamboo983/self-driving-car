@@ -1,41 +1,51 @@
-# **Finding Lane Lines on the Road** 
-
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file. But feel free to use some other method and submit a pdf if you prefer.
-
----
-
-**Finding Lane Lines on the Road**
-
-The goals / steps of this project are the following:
-* Make a pipeline that finds lane lines on the road
-* Reflect on your work in a written report
-
+# **Finding Lane Lines on the Road**
 
 [//]: # (Image References)
 
-[image1]: ./examples/grayscale.jpg "Grayscale"
-
----
+[original]: ./pipeline_images/original.png "Original"
+[gray]: ./pipeline_images/gray.png "Grayscale"
+[blur_gray]: ./pipeline_images/blur_gray.png "Blur Grayscale"
+[edges]: ./pipeline_images/edges.png "Edges"
+[masked]: ./pipeline_images/masked.png "Masked"
+[lines]: ./pipeline_images/lines.png "Lines"
 
 ### Reflection
 
 ### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
 
-My pipeline consisted of 5 steps. First, I converted the images to grayscale, then I .... 
+My pipeline consisted of 5 steps. The followings showed step-by-step results from original
+image to final result.
 
-In order to draw a single line on the left and right lanes, I modified the draw_lines() function by ...
+![Original][original]
 
-If you'd like to include images to show how the pipeline works, here is how to include an image: 
+Step 1. Convert original image from RGB to grayscale
 
-![alt text][image1]
+![Grayscale][gray]
+
+Step 2. Apply Gaussian blur to the grayscale image
+
+![Blur Grayscale][blur_gray]
+
+Step 3. Use Canny edge detection to find the edges
+
+![Edges][edges]
+
+Step 4. Mask the region of interest by a trapezoid
+
+![Masked][masked]
+
+Step 5. Draw lines on the lanes by Hough transform
+
+![Lines][lines]
+
+In order to draw a single line on the left and right lanes, I modified the draw_lines() function by taking the medians of the slopes and intercepts of the segments from Hough transform.
+
 
 
 ### 2. Identify potential shortcomings with your current pipeline
 
 
-One potential shortcoming would be what would happen when ... 
+One potential shortcoming would be what would happen when ...
 
 Another shortcoming could be ...
 
