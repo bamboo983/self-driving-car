@@ -1,56 +1,82 @@
-# **Finding Lane Lines on the Road** 
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+# **Finding Lane Lines on the Road**
 
-<img src="examples/laneLines_thirdPass.jpg" width="480" alt="Combined Image" />
+[//]: # (Image References)
 
-Overview
----
+[original]: ./pipeline_images/original.png "Original"
+[gray]: ./pipeline_images/gray.png "Grayscale"
+[blur_gray]: ./pipeline_images/blur_gray.png "Blur Grayscale"
+[edges]: ./pipeline_images/edges.png "Edges"
+[masked]: ./pipeline_images/masked.png "Masked"
+[lines]: ./pipeline_images/lines.png "Lines"
+[draw]: ./pipeline_images/draw.png "Draw"
 
-When we drive, we use our eyes to decide where to go.  The lines on the road that show us where the lanes are act as our constant reference for where to steer the vehicle.  Naturally, one of the first things we would like to do in developing a self-driving car is to automatically detect lane lines using an algorithm.
+### Reflection
 
-In this project you will detect lane lines in images using Python and OpenCV.  OpenCV means "Open-Source Computer Vision", which is a package that has many useful tools for analyzing images.  
+### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
 
-To complete the project, two files will be submitted: a file containing project code and a file containing a brief write up explaining your solution. We have included template files to be used both for the [code](https://github.com/udacity/CarND-LaneLines-P1/blob/master/P1.ipynb) and the [writeup](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md).The code file is called P1.ipynb and the writeup template is writeup_template.md 
+My pipeline consisted of 5 steps. The followings showed step-by-step results from original
+image to final result.
 
-To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
+![Original][original]
 
+Step 1. Convert original image from RGB to grayscale.
 
-Creating a Great Writeup
----
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
+![Grayscale][gray]
 
-1. Describe the pipeline
+Step 2. Apply Gaussian blur to the grayscale image.
 
-2. Identify any shortcomings
+The kernel size is 5x5.
 
-3. Suggest possible improvements
+![Blur Grayscale][blur_gray]
 
-We encourage using images in your writeup to demonstrate how your pipeline works.  
+Step 3. Use Canny edge detection to find the edges.
 
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
+The low threshold is 50, and high threshold is 150.
 
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
+![Edges][edges]
 
+Step 4. Mask the region of interest by a trapezoid.
 
-The Project
----
+The trapezoid was formed from 60% of the height to the bottom of the image, and the
+upper two vertices were picked from 20 pixels from the center of the top edge
+and the bottom two vertices were the leftmost and rightmost points.
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
+![Masked][masked]
 
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/83ec35ee-1e02-48a5-bdb7-d244bd47c2dc/lessons/8c82408b-a217-4d09-b81d-1bda4c6380ef/concepts/4f1870e0-3849-43e4-b670-12e6f2d4b7a7) if you haven't already.
+Step 5. Apply Hough transformation to get line segments.
 
-**Step 2:** Open the code in a Jupyter Notebook
+Step 6. Compute the slopes and intercepts of line segments and take the median
+of them to form two lane lines equations.
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out <A HREF="https://www.packtpub.com/books/content/basics-jupyter-notebook-and-python" target="_blank">Cyrille Rossant's Basics of Jupyter Notebook and Python</A> to get started.
+Step 7. Solve the equations to get the endpoints of lane lines and draw them
+on the original image.
 
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
+![Lines][lines]
 
-`> jupyter notebook`
+In order to draw a single line on the left and right lanes, I modified the
+draw_lines() function by taking the medians of the slopes and intercepts of the
+segments from Hough transform. Based on the slopes and intercepts, we could
+form the equations of the left and right lanes. By solving the equations of
+these two lines and the horizontal line of 60% of the image height and the
+bottom line, four intersection points could be derived to draw the lane lines.
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
+![Draw][draw]
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
+### 2. Identify potential shortcomings with your current pipeline
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+* The lane lines out of the region of interest would not be detected. Since this
+region was created by observing the videos beforehand, it only worked for the
+lane lines in this region. Other objects out of the region would be filtered out.
+* The current pipeline could not draw curved lines. When the vehicle started to
+make an U-turn, the detected lane lines would be incorrect.
+* The lines drew by the pipeline could deviate from the real line if the vehicle
+drives on dirty roads. The Hough transform may detect many noisy lines, and the
+median of them would drift from the reasonable range.
 
+### 3. Suggest possible improvements to your pipeline
+
+* Search the region of interest automatically instead of calculating it by human
+to solve the lane lines out of region issue.
+* Apply curve detection to make it also work on turning.
+* Use two or more regions of interest instead of one to decrease the noisy lines
+and improve the accuracy of line drawing.
