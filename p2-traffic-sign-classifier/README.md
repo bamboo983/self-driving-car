@@ -1,7 +1,5 @@
 # **Traffic Sign Recognition**
 
----
-
 The goals / steps of this project are the following:
 * Load the data set (see below for links to the project data set)
 * Explore, summarize and visualize the data set
@@ -34,11 +32,9 @@ The goals / steps of this project are the following:
 [image19]: ./images/original.png "Original"
 [image20]: ./images/gray.png "Grayscale"
 
----
-
 ### Data Set Summary & Exploration
 
-#### 1. A basic summary of the data set
+#### 1. Dateset Summary
 
 I used the pandas library to calculate summary statistics of the traffic
 signs data set:
@@ -49,7 +45,7 @@ signs data set:
 * The shape of a traffic sign image is 32x32x3
 * The number of unique classes/labels in the data set is 43
 
-#### 2. An exploratory visualization of the dataset
+#### 2. Exploratory Visualization
 
 Here are the exploratory visualization of the data set. They are histograms
 showing how training, validation and test sets distributed. We could see that
@@ -113,7 +109,7 @@ Adam was an adaptive moment estimation, which combines the advantages of AdaGrad
 not change the default batch size and learning rate, and 20 epochs was sufficient
 to meet the minimum requirement of validation set accuracy of 93%.
 
-#### 4. Approach to the Model
+#### 4. Solution Approach
 
 My final model results were:
 * Training set accuracy of 99.6%
@@ -146,7 +142,7 @@ would increased at some point. After applied on the test set, the accuracy of
 
 ### Test a Model on New Images
 
-#### 1. Eight German Traffic Signs Found on the Web
+#### 1. Acquiring New Images
 
 Here are eight German traffic signs that I found on the [web](http://benchmark.ini.rub.de/Dataset/GTSRB_Online-Test-Images.zip):
 
@@ -159,7 +155,7 @@ In the beginning, I thought these two images were crashed to all black. After
 zooming the size and adjusting the brightness by image processing software, I
 just realized that there were really traffic signs in the images.
 
-#### 2. Predictions on New Images from the Web
+#### 2. Performance on New Images
 
 Here are the results of the prediction:
 
@@ -180,7 +176,7 @@ accuracy of 100%. This compares favorably to the accuracy on the test set of
 93.6%. Therefore, this accuracy should be a reasonable result with small amount
 of images.
 
-#### 3. Top 5 Softmax Probabilities
+#### 3. Model Certainty - Softmax Probabilities
 
 The code for making predictions on my final model is located in the 26th cell of the Ipython notebook.
 
