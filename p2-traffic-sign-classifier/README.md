@@ -34,7 +34,7 @@ The goals / steps of this project are the following:
 
 ### Data Set Summary & Exploration
 
-#### 1. Dateset Summary
+#### 1. Dataset Summary
 
 I used the pandas library to calculate summary statistics of the traffic
 signs data set:
