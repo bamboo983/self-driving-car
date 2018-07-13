@@ -58,6 +58,7 @@ y_train = np.array(angles)
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda
 from keras.layers import Convolution2D, MaxPooling2D, Cropping2D
+import matplotlib.pyplot as plt
 
 model = Sequential()
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
@@ -73,6 +74,14 @@ model.add(Dense(50))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
-model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=1)
+history_object = model.fit(X_train, y_train, validation_split=0.2, shuffle=True, nb_epoch=1)
 model.save('model.h5')
 
+# Plot the training and validation loss for each epoch
+plt.plot(history_object.history['loss'])
+plt.plot(history_object.history['val_loss'])
+plt.title('Model Mean Squared Error Loss')
+plt.ylabel('Mean Squared Error Loss')
+plt.xlabel('Epoch')
+plt.legend(['training set', 'validation set'], loc='upper right')
+plt.show()
