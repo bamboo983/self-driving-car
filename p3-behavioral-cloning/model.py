@@ -82,7 +82,7 @@ validation_generator = generator(validation_samples, batch_size=32)
 
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda
-from keras.layers import Convolution2D, MaxPooling2D, Cropping2D
+from keras.layers import Convolution2D, MaxPooling2D, Cropping2D, Dropout
 import matplotlib.pyplot as plt
 
 model = Sequential()
@@ -95,7 +95,9 @@ model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Convolution2D(64, 3, 3, activation='relu'))
 model.add(Flatten())
 model.add(Dense(100))
+model.add(Dropout(0.5))
 model.add(Dense(50))
+model.add(Dropout(0.5))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
