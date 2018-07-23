@@ -1,5 +1,6 @@
 import csv
 
+# Load samples from a csv file and append them to a shared list
 def load_samples(filename, samples):
     with open(filename) as csvfile:
         reader = csv.reader(csvfile)
@@ -8,9 +9,12 @@ def load_samples(filename, samples):
             samples.append(line)
         return samples
 
+# A shared list
 samples = []
+# Load samples from two tracks
 samples = load_samples('./data/1/driving_log.csv', samples)
 # samples = load_samples('./data/2/driving_log.csv', samples)
+# Remove header
 samples = samples[1:]
 print('Number of samples: ', str(len(samples) * 6))
 
@@ -21,6 +25,7 @@ import cv2
 import numpy as np
 import sklearn
 
+# Use a generator to the data on the fly
 def generator(samples, batch_size=32):
     num_samples = len(samples)
     while 1:
@@ -41,14 +46,17 @@ def generator(samples, batch_size=32):
                 left_image_path = './data/' + left_source_path
                 right_image_path = './data/' + right_source_path
 
+                # Get image from three left, center and right cameras
                 center_image = cv2.imread(center_image_path)
                 left_image = cv2.imread(left_image_path)
                 right_image = cv2.imread(right_image_path)
 
+                # Get image flipped horizontally
                 center_image_flipped = np.fliplr(center_image)
                 left_image_flipped = np.fliplr(left_image)
                 right_image_flipped = np.fliplr(right_image)
 
+                # Append six images from one position
                 images.append(center_image)
                 images.append(left_image)
                 images.append(right_image)
@@ -56,15 +64,18 @@ def generator(samples, batch_size=32):
                 images.append(left_image_flipped)
                 images.append(right_image_flipped)
 
+                # Correct the steering angle for the left and right cameras from the center
                 correction = 0.2
                 center_angle = float(batch_sample[3])
                 left_angle = center_angle + correction
                 right_angle = center_angle - correction
 
+                # Get angle flipped horizontally
                 center_angle_flipped = -center_angle
                 left_angle_flipped = -left_angle
                 right_angle_flipped = -right_angle
 
+                # Append six steering angles from one position
                 angles.append(center_angle)
                 angles.append(left_angle)
                 angles.append(right_angle)
@@ -85,6 +96,8 @@ from keras.layers import Flatten, Dense, Lambda
 from keras.layers import Convolution2D, MaxPooling2D, Cropping2D, Dropout
 import matplotlib.pyplot as plt
 
+# Network design reference from the lesson with dropout layers
+# between the fully-connected layers to avoid overfitting
 model = Sequential()
 model.add(Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160, 320, 3)))
 model.add(Cropping2D(cropping=((70, 25), (0, 0))))
